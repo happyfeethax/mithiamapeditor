@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using System.IO; // Required for Path
 
 namespace Aesir5
 {
@@ -12,6 +13,12 @@ namespace Aesir5
         private Point focusedItem = new Point(-1,-1);
         private int sizeModifier;
         private bool showGrid;
+
+        private string[] selectedEpfPaths;
+        private string selectedPalPath;
+        private string selectedTblPath;
+        private Bitmap itemsBitmap;
+
         public bool ShowGrid
         {
             get { return showGrid; }
@@ -23,24 +30,24 @@ namespace Aesir5
             InitializeComponent();
             this.MouseWheel += new MouseEventHandler(FormClothing_MouseWheel);
             this.Text = "Clothing";
+
+            this.lblEpfPathValue.Text = "Not selected";
+            this.lblPalPathValue.Text = "Not selected";
+            this.lblTblPathValue.Text = "Not selected";
+            
+            // Get initial sizeModifier from ImageRenderer singleton
+            this.sizeModifier = ImageRenderer.Singleton.sizeModifier;
+            if (this.sizeModifier <=0) this.sizeModifier = 36; // Sensible default
+
+            this.itemsBitmap = new Bitmap(10 * this.sizeModifier, 10 * this.sizeModifier);
         }
 
         private void FormClothing_Load(object sender, EventArgs e)
         {
-            Reload(false);
-            MinimumSize = new Size(MinimumSize.Width + 10, MinimumSize.Height + 10);
-            MaximumSize = new Size(MaximumSize.Width + 10, MaximumSize.Height + 10);
-            if (this.BackgroundImage == null) this.BackgroundImage = new Bitmap(10 * sizeModifier, 10 * sizeModifier);
-            menuStrip.Visible = false;
-            if (TileManager.ClothingEpf != null && TileManager.ClothingEpf.Length > 0 && TileManager.ClothingEpf[0] != null)
-            {
-                hScrollBarClothing.Maximum = (TileManager.ClothingEpf[0].max / 100) + 9;
-            }
-            else
-            {
-                hScrollBarClothing.Maximum = 9; // Default if not loaded
-            }
-            RenderItems();
+            Reload(false); 
+            MinimumSize = new Size(this.ClientSize.Width + 12, this.ClientSize.Height + 32);
+            MaximumSize = new Size(this.ClientSize.Width + 12, this.ClientSize.Height + 32); 
+            menuStrip.Visible = false; 
         }
 
         private int GetItemNumber(int x, int y)
@@ -50,31 +57,34 @@ namespace Aesir5
 
         private void RenderItems()
         {
-            if (this.BackgroundImage == null) this.BackgroundImage = new Bitmap(10 * sizeModifier, 10 * sizeModifier);
-            Graphics g = Graphics.FromImage(this.BackgroundImage);
-            g.Clear(Color.DarkGray); // Changed background for differentiation
-
-            if (TileManager.ClothingEpf == null || TileManager.ClothingEpf.Length == 0 || TileManager.ClothingEpf[0] == null)
+            int currentBitmapWidth = 10 * (sizeModifier > 0 ? sizeModifier : 36);
+            int currentBitmapHeight = 10 * (sizeModifier > 0 ? sizeModifier : 36);
+            if (this.itemsBitmap == null || this.itemsBitmap.Width != currentBitmapWidth || this.itemsBitmap.Height != currentBitmapHeight)
             {
-                g.Dispose();
-                this.Invalidate();
-                return; // Can't render if data isn't loaded
+                if (this.itemsBitmap != null) this.itemsBitmap.Dispose();
+                this.itemsBitmap = new Bitmap(currentBitmapWidth, currentBitmapHeight);
             }
 
-            for (int x = 0; x < 10; x++)
+            using (Graphics g = Graphics.FromImage(this.itemsBitmap))
             {
-                for (int y = 0; y < 10; y++)
+                g.Clear(Color.DarkGray); 
+                if (TileManager.ClothingEpf != null && TileManager.ClothingEpf.Length > 0 && 
+                    TileManager.ClothingEpf[0] != null && TileManager.ClothingEpf[0].max > 0 &&
+                    TileManager.ClothingPal != null && TileManager.ClothingTBL != null)
                 {
-                    int itemNumber = GetItemNumber(x, y);
-
-                    if (itemNumber < TileManager.ClothingEpf[0].max)
+                    for (int x = 0; x < 10; x++)
                     {
-                        g.DrawImage(ImageRenderer.Singleton.GetClothingBitmap(itemNumber), x * sizeModifier, y * sizeModifier);
+                        for (int y = 0; y < 10; y++)
+                        {
+                            int itemNumber = GetItemNumber(x, y);
+                            if (itemNumber < TileManager.ClothingEpf[0].max)
+                            {
+                                g.DrawImage(ImageRenderer.Singleton.GetClothingBitmap(itemNumber), x * sizeModifier, y * sizeModifier);
+                            }
+                        }
                     }
                 }
             }
-
-            g.Dispose();
             this.Invalidate();
         }
 
@@ -86,34 +96,42 @@ namespace Aesir5
 
         void FormClothing_Paint(object sender, PaintEventArgs e)
         {
+            if (this.itemsBitmap != null)
+            {
+                e.Graphics.DrawImage(this.itemsBitmap, 0, 0);
+            }
+
             if (ShowGrid)
             {
-                Pen penGrid = new Pen(Color.LightCyan, 1);
-                for (int i = 0; i < 10; i++)
+                using (Pen penGrid = new Pen(Color.LightCyan, 1))
                 {
-                    for (int j = 0; j < 10; j++)
+                    for (int i = 0; i < 10; i++)
                     {
-                        e.Graphics.DrawRectangle(penGrid, i*sizeModifier, j*sizeModifier, sizeModifier, sizeModifier);
+                        for (int j = 0; j < 10; j++)
+                        {
+                            e.Graphics.DrawRectangle(penGrid, i*sizeModifier, j*sizeModifier, sizeModifier, sizeModifier);
+                        }
                     }
                 }
-                penGrid.Dispose();
             }
 
             if (selectedItems.Count > 0)
             {
-                Pen pen = new Pen(Color.Red, 2);
-                foreach (var selectedItem in selectedItems)
+                using (Pen pen = new Pen(Color.Red, 2))
                 {
-                    e.Graphics.DrawRectangle(pen, selectedItem.X * sizeModifier, selectedItem.Y * sizeModifier, sizeModifier, sizeModifier);
+                    foreach (var selectedItem in selectedItems)
+                    {
+                        e.Graphics.DrawRectangle(pen, selectedItem.X * sizeModifier, selectedItem.Y * sizeModifier, sizeModifier, sizeModifier);
+                    }
                 }
-                pen.Dispose();
             }
 
             if (focusedItem.X >= 0 && focusedItem.Y >= 0)
             {
-                Pen pen = new Pen(Color.Green, 2);
-                e.Graphics.DrawRectangle(pen, focusedItem.X * sizeModifier, focusedItem.Y * sizeModifier, sizeModifier, sizeModifier);
-                pen.Dispose();
+                using (Pen pen = new Pen(Color.Green, 2))
+                {
+                    e.Graphics.DrawRectangle(pen, focusedItem.X * sizeModifier, focusedItem.Y * sizeModifier, sizeModifier, sizeModifier);
+                }
             }
         }
 
@@ -153,21 +171,21 @@ namespace Aesir5
             int newSelectedItemY = e.Y / sizeModifier;
 
             Point selectedItem = new Point(newSelectedItemX, newSelectedItemY);
-            if (ModifierKeys == Keys.Control)
+            if ((Control.ModifierKeys & Keys.Control) == Keys.Control) // Corrected ModifierKeys check
             {
                 if (!selectedItems.Contains(selectedItem))
                     selectedItems.Add(selectedItem);
+                else
+                    selectedItems.Remove(selectedItem); // Allow deselect with Ctrl+Click
             }
             else
             {
                 selectedItems.Clear();
                 selectedItems.Add(selectedItem);
             }
-            // For now, we'll use ObjectSelection as a placeholder for where clothing selection would go.
-            // A dedicated ClothingSelection might be needed later.
             TileManager.ObjectSelection = GetSelection(); 
-            TileManager.LastSelection = TileManager.SelectionType.Object; // Or a new SelectionType for Clothing
-            this.Invalidate(); // To redraw selection
+            TileManager.LastSelection = TileManager.SelectionType.Object; 
+            this.Invalidate(); 
         }
 
         public Dictionary<Point, int> GetSelection()
@@ -198,6 +216,7 @@ namespace Aesir5
             {
                 NavigateToClothingItem(numberInputForm.Number);
             }
+            numberInputForm.Dispose();
         }
 
         private void showGridToolStripMenuItem_Click(object sender, EventArgs e)
@@ -207,7 +226,8 @@ namespace Aesir5
 
         public void NavigateToClothingItem(int number)
         {
-            if (TileManager.ClothingEpf == null || TileManager.ClothingEpf.Length == 0 || TileManager.ClothingEpf[0] == null) return;
+            if (TileManager.ClothingEpf == null || TileManager.ClothingEpf.Length == 0 || 
+                TileManager.ClothingEpf[0] == null || TileManager.ClothingEpf[0].max == 0) return;
             if (number < 0 || number >= TileManager.ClothingEpf[0].max ) return;
 
             int sbIndex = number / 100;
@@ -217,29 +237,130 @@ namespace Aesir5
             hScrollBarClothing.Value = sbIndex;
             selectedItems.Clear();
             selectedItems.Add(new Point(x, y));
-            TileManager.ObjectSelection = GetSelection(); // Placeholder
-            TileManager.LastSelection = TileManager.SelectionType.Object; // Placeholder
+            TileManager.ObjectSelection = GetSelection(); 
+            TileManager.LastSelection = TileManager.SelectionType.Object; 
             RenderItems();
         }
 
         public void Reload(bool render)
         {
             sizeModifier = ImageRenderer.Singleton.sizeModifier;
-            SetClientSizeCore((10 * sizeModifier) -1, (10 * sizeModifier) + menuStrip.Height + statusStrip.Height + hScrollBarClothing.Height -1); // Adjusted for all components
-            MinimumSize = new Size(ClientSize.Width + 6, ClientSize.Height + 24); // Adjusted based on original FormTile
-            MaximumSize = new Size(ClientSize.Width + 6, ClientSize.Height + 24); // Adjusted based on original FormTile
-            this.BackgroundImage = null;
+            if (sizeModifier <= 0) sizeModifier = 36; // Ensure sensible default
 
-            if (TileManager.ClothingEpf != null && TileManager.ClothingEpf.Length > 0 && TileManager.ClothingEpf[0] != null)
+            int panelHeight = this.panelFileSelection.Height;
+            int scrollBarHeight = this.hScrollBarClothing.Height;
+            int statusStripHeight = this.statusStrip.Height;
+            // ClientSize should be the area for the panel + drawing area + scrollbar + status strip
+            // The menuStrip is handled by the Form itself when MainMenuStrip is set.
+            int drawingAreaHeight = 10 * sizeModifier;
+            int requiredClientHeight = panelHeight + drawingAreaHeight + scrollBarHeight + statusStripHeight;
+            int requiredClientWidth = 10 * sizeModifier; 
+            
+            if (this.ClientSize.Width != requiredClientWidth || this.ClientSize.Height != requiredClientHeight)
+            {
+                 this.ClientSize = new Size(requiredClientWidth, requiredClientHeight);
+            }
+            // MinimumSize and MaximumSize are set in Form_Load and should be fine if ClientSize is correct.
+
+            if (this.itemsBitmap != null) this.itemsBitmap.Dispose();
+            this.itemsBitmap = new Bitmap(10 * sizeModifier, 10 * sizeModifier);
+
+            if (TileManager.ClothingEpf != null && TileManager.ClothingEpf.Length > 0 && 
+                TileManager.ClothingEpf[0] != null && TileManager.ClothingEpf[0].max > 0 &&
+                TileManager.ClothingPal != null && TileManager.ClothingTBL != null) // Added PAL/TBL check for scrollbar
             {
                  hScrollBarClothing.Maximum = (TileManager.ClothingEpf[0].max / 100) + 9;
+                 hScrollBarClothing.Visible = true;
             }
-             else
+            else
             {
-                hScrollBarClothing.Maximum = 9;
+                hScrollBarClothing.Maximum = 9; 
+                hScrollBarClothing.Value = 0;
+                hScrollBarClothing.Visible = false; 
+            }
+            RenderItems(); 
+        }
+
+        private void btnLoadData_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog epfDialog = new OpenFileDialog())
+            {
+                epfDialog.Title = "Select EPF File(s)";
+                epfDialog.Filter = "EPF files (*.epf)|*.epf|All files (*.*)|*.*";
+                epfDialog.Multiselect = true;
+                if (epfDialog.ShowDialog() == DialogResult.OK)
+                {
+                    this.selectedEpfPaths = epfDialog.FileNames;
+                    this.lblEpfPathValue.Text = string.Join(", ", epfDialog.SafeFileNames); 
+                }
+                else { this.selectedEpfPaths = null; this.lblEpfPathValue.Text = "Not selected"; } // Clear if cancelled
             }
 
-            if (render) RenderItems();
+            using (OpenFileDialog palDialog = new OpenFileDialog())
+            {
+                palDialog.Title = "Select PAL File";
+                palDialog.Filter = "PAL files (*.pal)|*.pal|All files (*.*)|*.*";
+                palDialog.Multiselect = false;
+                if (palDialog.ShowDialog() == DialogResult.OK)
+                {
+                    this.selectedPalPath = palDialog.FileName;
+                    this.lblPalPathValue.Text = palDialog.SafeFileName;
+                }
+                else { this.selectedPalPath = null; this.lblPalPathValue.Text = "Not selected"; } // Clear if cancelled
+            }
+
+            using (OpenFileDialog tblDialog = new OpenFileDialog())
+            {
+                tblDialog.Title = "Select TBL File";
+                tblDialog.Filter = "TBL files (*.tbl)|*.tbl|All files (*.*)|*.*";
+                tblDialog.Multiselect = false;
+                if (tblDialog.ShowDialog() == DialogResult.OK)
+                {
+                    this.selectedTblPath = tblDialog.FileName;
+                    this.lblTblPathValue.Text = tblDialog.SafeFileName;
+                }
+                else { this.selectedTblPath = null; this.lblTblPathValue.Text = "Not selected"; } // Clear if cancelled
+            }
+
+            if (this.selectedEpfPaths != null && this.selectedEpfPaths.Length > 0 && 
+                !string.IsNullOrEmpty(this.selectedPalPath) && 
+                !string.IsNullOrEmpty(this.selectedTblPath))
+            {
+                try
+                {
+                    TileManager.LoadClothing(this.selectedEpfPaths, this.selectedPalPath, this.selectedTblPath);
+                    if (TileManager.ClothingEpf != null && TileManager.ClothingEpf.Length > 0 && 
+                        TileManager.ClothingEpf[0] != null && TileManager.ClothingEpf[0].max > 0 &&
+                        TileManager.ClothingPal != null && TileManager.ClothingTBL != null)
+                    {
+                        this.Reload(true); 
+                    }
+                    else
+                    {
+                        this.lblEpfPathValue.Text = "Load failed or empty";
+                        this.lblPalPathValue.Text = "Load failed or empty";
+                        this.lblTblPathValue.Text = "Load failed or empty";
+                        this.Reload(false); // Clear display
+                        MessageBox.Show("Failed to load valid clothing data from selected files, or files were empty.", "Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading files: " + ex.Message, "Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.lblEpfPathValue.Text = "Error";
+                    this.lblPalPathValue.Text = "Error";
+                    this.lblTblPathValue.Text = "Error";
+                    this.Reload(false); // Clear display
+                }
+            }
+            else
+            {
+                // One or more files were not selected, so ensure we show an empty state.
+                TileManager.ClothingEpf[0] = null; // Ensure TileManager reflects no loaded data
+                TileManager.ClothingPal = null;
+                TileManager.ClothingTBL = null;
+                this.Reload(false);
+            }
         }
     }
 }

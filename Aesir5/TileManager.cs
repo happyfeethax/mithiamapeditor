@@ -52,16 +52,16 @@ namespace Aesir5
             TileCTBL = new PaletteTable(folder + "\\data\\tileC.tbl");
             ObjectInfos = ObjectInfo.ReadCollection(folder + "\\data\\SObj.tbl");
 
-            LoadClothing(folder);
-            LoadMonsters(folder);
-            LoadSpells(folder);
+            // LoadClothing(folder); // Now called directly by FormClothing with specific paths
+            // LoadMonsters(folder); // Now called directly by FormMonsters with specific paths
+            // LoadSpells(folder);   // Now called directly by FormSpells with specific paths
 
-            ClothingPal = Palette256.FromFile(folder + "\\data\\clothing.pal");
-            ClothingTBL = new PaletteTable(folder + "\\data\\clothing.tbl");
-            MonstersPal = Palette256.FromFile(folder + "\\data\\monsters.pal");
-            MonstersTBL = new PaletteTable(folder + "\\data\\monsters.tbl");
-            SpellsPal = Palette256.FromFile(folder + "\\data\\spells.pal");
-            SpellsTBL = new PaletteTable(folder + "\\data\\spells.tbl");
+            // ClothingPal = Palette256.FromFile(folder + "\\data\\clothing.pal"); // Moved to LoadClothing
+            // ClothingTBL = new PaletteTable(folder + "\\data\\clothing.tbl"); // Moved to LoadClothing
+            // MonstersPal = Palette256.FromFile(folder + "\\data\\monsters.pal"); // Moved to LoadMonsters
+            // MonstersTBL = new PaletteTable(folder + "\\data\\monsters.tbl"); // Moved to LoadMonsters
+            // SpellsPal = Palette256.FromFile(folder + "\\data\\spells.pal");   // Moved to LoadSpells
+            // SpellsTBL = new PaletteTable(folder + "\\data\\spells.tbl");     // Moved to LoadSpells
         }
 
         private static void LoadTiles()
@@ -128,97 +128,156 @@ namespace Aesir5
             lblStatus.Text = "";
         }
 
-        private static void LoadClothing(string folder)
+        public static void LoadClothing(string[] epfPaths, string palPath, string tblPath)
         {
             lblStatus.Text = @"Loading clothing...";
-            string[] file = new string[30];
-            string nPath = Application.StartupPath + "\\Data\\";
-            for (int a = 0; a < 30; a++)
+
+            // Load PAL and TBL files
+            try
             {
-                file[a] = String.Format("{0}{1}{2}.epf", nPath, "clothing", a);
+                if (File.Exists(palPath)) ClothingPal = Palette256.FromFile(palPath);
+                else ClothingPal = null; // Or handle error more explicitly
+
+                if (File.Exists(tblPath)) ClothingTBL = new PaletteTable(tblPath);
+                else ClothingTBL = null; // Or handle error
             }
-            int count = 0;
-            for (int a = 0; a < 30; a++)
+            catch (Exception ex)
             {
-                if (File.Exists(file[a]))
+                lblStatus.Text = $"Error loading clothing PAL/TBL: {ex.Message}";
+                // Optionally rethrow or handle more gracefully
+                ClothingPal = null;
+                ClothingTBL = null;
+                // return; // Might be too abrupt, depends on desired behavior
+            }
+            
+            lblStatus.Text = @"Loading clothing EPF files...";
+            int count = 0;
+            if (epfPaths != null)
+            {
+                foreach (string filePath in epfPaths)
                 {
-                    count += EPFFile.Count(file[a]);
+                    if (File.Exists(filePath))
+                    {
+                        count += EPFFile.Count(filePath);
+                    }
                 }
             }
 
             ClothingEpf[0] = EPFFile.Init(count);
             ClothingEpf[0].max = count;
-            count = 0;
-            for (int a = 0; a < 30; a++)
+            count = 0; // Reset count for frame offset
+
+            if (epfPaths != null)
             {
-                Application.DoEvents();
-                if (File.Exists(file[a]))
+                foreach (string filePath in epfPaths)
                 {
-                    count = EPFFile.LoadEPF(ClothingEpf[0], file[a], count);
+                    Application.DoEvents();
+                    if (File.Exists(filePath))
+                    {
+                        count = EPFFile.LoadEPF(ClothingEpf[0], filePath, count);
+                    }
                 }
             }
             lblStatus.Text = "";
         }
 
-        private static void LoadMonsters(string folder)
+        public static void LoadMonsters(string[] epfPaths, string palPath, string tblPath)
         {
             lblStatus.Text = @"Loading monsters...";
-            string[] file = new string[30];
-            string nPath = Application.StartupPath + "\\Data\\";
-            for (int a = 0; a < 30; a++)
+
+            // Load PAL and TBL files
+            try
             {
-                file[a] = String.Format("{0}{1}{2}.epf", nPath, "monsters", a);
+                if (File.Exists(palPath)) MonstersPal = Palette256.FromFile(palPath);
+                else MonstersPal = null;
+
+                if (File.Exists(tblPath)) MonstersTBL = new PaletteTable(tblPath);
+                else MonstersTBL = null;
             }
-            int count = 0;
-            for (int a = 0; a < 30; a++)
+            catch (Exception ex)
             {
-                if (File.Exists(file[a]))
+                lblStatus.Text = $"Error loading monsters PAL/TBL: {ex.Message}";
+                MonstersPal = null;
+                MonstersTBL = null;
+            }
+
+            lblStatus.Text = @"Loading monsters EPF files...";
+            int count = 0;
+            if (epfPaths != null)
+            {
+                foreach (string filePath in epfPaths)
                 {
-                    count += EPFFile.Count(file[a]);
+                    if (File.Exists(filePath))
+                    {
+                        count += EPFFile.Count(filePath);
+                    }
                 }
             }
 
             MonstersEpf[0] = EPFFile.Init(count);
             MonstersEpf[0].max = count;
-            count = 0;
-            for (int a = 0; a < 30; a++)
+            count = 0; // Reset count for frame offset
+
+            if (epfPaths != null)
             {
-                Application.DoEvents();
-                if (File.Exists(file[a]))
+                foreach (string filePath in epfPaths)
                 {
-                    count = EPFFile.LoadEPF(MonstersEpf[0], file[a], count);
+                    Application.DoEvents();
+                    if (File.Exists(filePath))
+                    {
+                        count = EPFFile.LoadEPF(MonstersEpf[0], filePath, count);
+                    }
                 }
             }
             lblStatus.Text = "";
         }
 
-        private static void LoadSpells(string folder)
+        public static void LoadSpells(string[] epfPaths, string palPath, string tblPath)
         {
             lblStatus.Text = @"Loading spells...";
-            string[] file = new string[30];
-            string nPath = Application.StartupPath + "\\Data\\";
-            for (int a = 0; a < 30; a++)
+
+            // Load PAL and TBL files
+            try
             {
-                file[a] = String.Format("{0}{1}{2}.epf", nPath, "spells", a);
+                if (File.Exists(palPath)) SpellsPal = Palette256.FromFile(palPath);
+                else SpellsPal = null;
+
+                if (File.Exists(tblPath)) SpellsTBL = new PaletteTable(tblPath);
+                else SpellsTBL = null;
             }
-            int count = 0;
-            for (int a = 0; a < 30; a++)
+            catch (Exception ex)
             {
-                if (File.Exists(file[a]))
+                lblStatus.Text = $"Error loading spells PAL/TBL: {ex.Message}";
+                SpellsPal = null;
+                SpellsTBL = null;
+            }
+
+            lblStatus.Text = @"Loading spells EPF files...";
+            int count = 0;
+            if (epfPaths != null)
+            {
+                foreach (string filePath in epfPaths)
                 {
-                    count += EPFFile.Count(file[a]);
+                    if (File.Exists(filePath))
+                    {
+                        count += EPFFile.Count(filePath);
+                    }
                 }
             }
 
             SpellsEpf[0] = EPFFile.Init(count);
             SpellsEpf[0].max = count;
-            count = 0;
-            for (int a = 0; a < 30; a++)
+            count = 0; // Reset count for frame offset
+
+            if (epfPaths != null)
             {
-                Application.DoEvents();
-                if (File.Exists(file[a]))
+                foreach (string filePath in epfPaths)
                 {
-                    count = EPFFile.LoadEPF(SpellsEpf[0], file[a], count);
+                    Application.DoEvents();
+                    if (File.Exists(filePath))
+                    {
+                        count = EPFFile.LoadEPF(SpellsEpf[0], filePath, count);
+                    }
                 }
             }
             lblStatus.Text = "";
