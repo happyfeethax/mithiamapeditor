@@ -106,9 +106,34 @@
             // 
             // viewToolStripMenuItem
             // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clothingToolStripMenuItem,
+            this.monstersToolStripMenuItem,
+            this.spellsToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "&View";
+            // 
+            // clothingToolStripMenuItem
+            // 
+            this.clothingToolStripMenuItem.Name = "clothingToolStripMenuItem";
+            this.clothingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clothingToolStripMenuItem.Text = "&Clothing";
+            this.clothingToolStripMenuItem.Click += new System.EventHandler(this.clothingToolStripMenuItem_Click);
+            // 
+            // monstersToolStripMenuItem
+            // 
+            this.monstersToolStripMenuItem.Name = "monstersToolStripMenuItem";
+            this.monstersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.monstersToolStripMenuItem.Text = "&Monsters";
+            this.monstersToolStripMenuItem.Click += new System.EventHandler(this.monstersToolStripMenuItem_Click);
+            // 
+            // spellsToolStripMenuItem
+            // 
+            this.spellsToolStripMenuItem.Name = "spellsToolStripMenuItem";
+            this.spellsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.spellsToolStripMenuItem.Text = "&Spells";
+            this.spellsToolStripMenuItem.Click += new System.EventHandler(this.spellsToolStripMenuItem_Click);
             // 
             // windowsToolStripMenuItem
             // 
@@ -240,6 +265,9 @@
         private System.Windows.Forms.ToolStripMenuItem x48ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem x36ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem x24ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clothingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem monstersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem spellsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem functionListToolStripMenuItem;
 

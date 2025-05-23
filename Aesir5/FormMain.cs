@@ -8,6 +8,10 @@ namespace Aesir5
     {
         public int sizeModifier;
 
+        private FormClothing fClothing;
+        private FormMonsters fMonsters;
+        private FormSpells fSpells;
+
         public FormMain()
         {
             InitializeComponent();
@@ -191,6 +195,55 @@ namespace Aesir5
                     "Shift + Left-Click: Copy Single Tile/Object\nShift + Left-Click + Drag: Copy Contiguous Tiles/Objects\nRight-Click: Fill Area\n" +
                     "Ctrl + Right-Click: Fill Map\nMouse-Wheel Up: Scroll Left\nMouse-Wheel Down: Scroll Right\nCtrl + Mouse-Wheel Up: Scroll Up\n" +
                     "Ctrl + Mouse-Wheel Down: Scroll Down", "Map Window Help");
+        }
+
+        private void clothingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // FormClothing will be created in a future step.
+            // For now, this would cause a compile error if FormClothing doesn't exist.
+            // if (fClothing == null || fClothing.IsDisposed)
+            // {
+            //     fClothing = new FormClothing { MdiParent = this };
+            //     fClothing.Show();
+            // }
+            // else
+            // {
+            //     fClothing.Activate();
+            // }
+            FormClothing formClothing = new FormClothing { MdiParent = this };
+            formClothing.Show();
+        }
+
+        private void monstersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // FormMonsters will be created in a future step.
+            // if (fMonsters == null || fMonsters.IsDisposed)
+            // {
+            //     fMonsters = new FormMonsters { MdiParent = this };
+            //     fMonsters.Show();
+            // }
+            // else
+            // {
+            //     fMonsters.Activate();
+            // }
+            FormMonsters formMonsters = new FormMonsters { MdiParent = this };
+            formMonsters.Show();
+        }
+
+        private void spellsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // FormSpells will be created in a future step.
+            // if (fSpells == null || fSpells.IsDisposed)
+            // {
+            //     fSpells = new FormSpells { MdiParent = this };
+            //     fSpells.Show();
+            // }
+            // else
+            // {
+            //     fSpells.Activate();
+            // }
+            FormSpells formSpells = new FormSpells { MdiParent = this };
+            formSpells.Show();
         }
     }
 }
