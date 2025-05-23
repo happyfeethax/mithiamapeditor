@@ -210,8 +210,17 @@ namespace Aesir5
             // {
             //     fClothing.Activate();
             // }
-            FormClothing formClothing = new FormClothing { MdiParent = this };
-            formClothing.Show();
+            // FormClothing formClothing = new FormClothing { MdiParent = this };
+            // formClothing.Show();
+            if (this.fClothing == null || this.fClothing.IsDisposed)
+            {
+                this.fClothing = new FormClothing { MdiParent = this };
+                this.fClothing.Show();
+            }
+            else
+            {
+                this.fClothing.Activate();
+            }
         }
 
         private void monstersToolStripMenuItem_Click(object sender, EventArgs e)
@@ -226,8 +235,17 @@ namespace Aesir5
             // {
             //     fMonsters.Activate();
             // }
-            FormMonsters formMonsters = new FormMonsters { MdiParent = this };
-            formMonsters.Show();
+            // FormMonsters formMonsters = new FormMonsters { MdiParent = this };
+            // formMonsters.Show();
+            if (this.fMonsters == null || this.fMonsters.IsDisposed)
+            {
+                this.fMonsters = new FormMonsters { MdiParent = this };
+                this.fMonsters.Show();
+            }
+            else
+            {
+                this.fMonsters.Activate();
+            }
         }
 
         private void spellsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -242,8 +260,17 @@ namespace Aesir5
             // {
             //     fSpells.Activate();
             // }
-            FormSpells formSpells = new FormSpells { MdiParent = this };
-            formSpells.Show();
+            // FormSpells formSpells = new FormSpells { MdiParent = this };
+            // formSpells.Show();
+            if (this.fSpells == null || this.fSpells.IsDisposed)
+            {
+                this.fSpells = new FormSpells { MdiParent = this };
+                this.fSpells.Show();
+            }
+            else
+            {
+                this.fSpells.Activate();
+            }
         }
     }
 }
