@@ -1,6 +1,5 @@
-﻿namespace Aesir5
+namespace Aesir5
 {
-    
     partial class FormMain
     {
         /// <summary>
@@ -30,45 +29,33 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
+            // Instantiation of all controls - ensuring each is instantiated only ONCE
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem = new System.Windows.Forms.ToolStripSeparator(); // Separator for File menu
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tileSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.x48ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.x36ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.x24ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.functionListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.clothingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem(); // Added instantiation
-            this.monstersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem(); // Added instantiation
-            this.spellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();   // Added instantiation
-            this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tileSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.x48ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.x36ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.x24ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            // Instantiations for the new ToolStripMenuItems
             this.clothingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.monstersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.spellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tileSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.x48ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.x36ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.x24ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.functionListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            
+            // Suspend layout for main components
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
+            
             // 
             // menuStrip1
             // 
@@ -90,33 +77,7 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newMapToolStripMenuItem,
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.menuStrip1.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.editToolStripMenuItem,
-            this.viewToolStripMenuItem,
-            this.windowsToolStripMenuItem,
-            this.tileSizeToolStripMenuItem,
-            this.helpToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.MdiWindowListItem = this.windowsToolStripMenuItem;
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(603, 24);
-            this.menuStrip1.TabIndex = 1;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // fileToolStripMenuItem
-            // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newMapToolStripMenuItem,
-            this.toolStripMenuItem,
+            this.toolStripMenuItem, // This is the separator
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -130,7 +91,7 @@
             this.newMapToolStripMenuItem.Text = "&New Map Window";
             this.newMapToolStripMenuItem.Click += new System.EventHandler(this.newMapToolStripMenuItem_Click);
             // 
-            // toolStripMenuItem
+            // toolStripMenuItem (File menu separator)
             // 
             this.toolStripMenuItem.Name = "toolStripMenuItem";
             this.toolStripMenuItem.Size = new System.Drawing.Size(214, 6);
@@ -162,21 +123,21 @@
             // clothingToolStripMenuItem
             // 
             this.clothingToolStripMenuItem.Name = "clothingToolStripMenuItem";
-            this.clothingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clothingToolStripMenuItem.Size = new System.Drawing.Size(180, 22); // Standard size
             this.clothingToolStripMenuItem.Text = "&Clothing";
             this.clothingToolStripMenuItem.Click += new System.EventHandler(this.clothingToolStripMenuItem_Click);
             // 
             // monstersToolStripMenuItem
             // 
             this.monstersToolStripMenuItem.Name = "monstersToolStripMenuItem";
-            this.monstersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.monstersToolStripMenuItem.Size = new System.Drawing.Size(180, 22); // Standard size
             this.monstersToolStripMenuItem.Text = "&Monsters";
             this.monstersToolStripMenuItem.Click += new System.EventHandler(this.monstersToolStripMenuItem_Click);
             // 
             // spellsToolStripMenuItem
             // 
             this.spellsToolStripMenuItem.Name = "spellsToolStripMenuItem";
-            this.spellsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.spellsToolStripMenuItem.Size = new System.Drawing.Size(180, 22); // Standard size
             this.spellsToolStripMenuItem.Text = "&Spells";
             this.spellsToolStripMenuItem.Click += new System.EventHandler(this.spellsToolStripMenuItem_Click);
             // 
@@ -276,6 +237,8 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.FormMain_Load);
+            
+            // Resume layout for main components
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -287,37 +250,37 @@
 
         #endregion
 
+        // Field declarations (ensure these match the instantiated controls)
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newMapToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel lblStatus;
-        public FormTile fTile; //= new frmTile();
-        public FormObject fObject;// = new frmObject();
-        public FormMap fMap;// = new frmMap();
-        public Palette256[] tilePal;
-        public Palette256[] tileCPal;
-        public PaletteTable tileTBL;
-        public PaletteTable tileCTBL;
-        public ObjectInfo[] objectInfos;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clothingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem monstersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem spellsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem windowsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tileSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem x48ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem x36ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem x24ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem clothingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem monstersToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem spellsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem functionListToolStripMenuItem;
-
-
-        //public ArchiveInfo dat;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel lblStatus;
+        
+        // Public fields for other forms - these are not UI controls directly initialized here but part of FormMain
+        public FormTile fTile;
+        public FormObject fObject;
+        public FormMap fMap;
+        public Palette256[] tilePal;
+        public Palette256[] tileCPal;
+        public PaletteTable tileTBL;
+        public PaletteTable tileCTBL;
+        public ObjectInfo[] objectInfos;
+        // public ArchiveInfo dat; // This was commented out in the original, retaining that state
     }
 }
-
